@@ -1,0 +1,492 @@
+2615
+SELECT DISTINCT city
+FROM customers
+---------------------------------------------------------------------------------------------------------------------------------------
+2608
+SELECT MAX(price), MIN(price)
+FROM products
+---------------------------------------------------------------------------------------------------------------------------------------
+2622
+SELECT p.name
+FROM customers p 
+INNER JOIN legal_person l 
+ON p.id = l.id_customers
+---------------------------------------------------------------------------------------------------------------------------------------
+2744
+SELECT id, password, MD5(password) AS MD5
+FROM account 
+---------------------------------------------------------------------------------------------------------------------------------------
+2746
+SELECT replace(name, 'H1', 'X') AS name
+FROM virus
+---------------------------------------------------------------------------------------------------------------------------------------
+2617
+SELECT p.name, f.name
+FROM providers f 
+INNER JOIN products p 
+ON f.id = p.id_providers
+WHERE f.name = 'Ajax SA'
+---------------------------------------------------------------------------------------------------------------------------------------
+2603
+SELECT name, street
+FROM customers
+WHERE LOWER(city) = 'porto alegre'
+---------------------------------------------------------------------------------------------------------------------------------------
+2607
+SELECT DISTINCT city 
+FROM providers
+ORDER BY city ASC
+---------------------------------------------------------------------------------------------------------------------------------------
+2613
+SELECT m.id, m.name
+FROM movies m 
+INNER JOIN prices p 
+ON m.id_prices = p.id
+WHERE p.categorie = 'Promotion'
+---------------------------------------------------------------------------------------------------------------------------------------
+2619
+SELECT a.name, b.name, a.price
+FROM categories c 
+INNER JOIN products a 
+ON a.id_categories = c.id 
+INNER JOIN providers b 
+ON a.id_providers = b.id
+WHERE c.name = 'Super Luxury' AND a.price > 1000
+---------------------------------------------------------------------------------------------------------------------------------------
+2994
+SELECT d.name, round(sum((a.hours * 150.0) + (((a.hours * 150.0) * w.bonus) / 100.0)), 1) as salary
+FROM doctors d 
+INNER JOIN attendances a 
+ON d.id = a.id_doctor
+INNER JOIN work_shifts w 
+ON w.id = a.id_work_shift 
+GROUP BY d.id
+ORDER BY salary DESC
+---------------------------------------------------------------------------------------------------------------------------------------
+2604
+SELECT id, name
+FROM products
+WHERE price > 100 or price < 10
+---------------------------------------------------------------------------------------------------------------------------------------
+2606
+SELECT p.id, p.name
+FROM products p 
+INNER JOIN categories c 
+ON p.id_categories = c.id
+WHERE LOWER(c.name) LIKE 'super%'
+---------------------------------------------------------------------------------------------------------------------------------------
+2624
+SELECT COUNT (DISTINCT city)
+FROM customers
+---------------------------------------------------------------------------------------------------------------------------------------
+2621
+SELECT p.name
+FROM products p 
+INNER JOIN providers f 
+ON p.id_providers = f.id
+WHERE f.name LIKE 'P%' AND p.amount BETWEEN 10 AND 20
+---------------------------------------------------------------------------------------------------------------------------------------
+2620
+SELECT c.name, o.id
+FROM customers c 
+INNER JOIN orders o 
+ON c.id = o.id_customers 
+WHERE o.orders_date BETWEEN '2016-01-01' AND '2016-06-30'
+---------------------------------------------------------------------------------------------------------------------------------------
+2610
+SELECT round(AVG(price), 2) as price
+FROM products
+---------------------------------------------------------------------------------------------------------------------------------------
+2743
+SELECT name, char_length(name) AS length
+FROM people
+ORDER BY length DESC
+---------------------------------------------------------------------------------------------------------------------------------------
+2993
+SELECT amount 
+FROM value_table 
+GROUP BY amount 
+ORDER BY count(amount) DESC
+LIMIT 1
+---------------------------------------------------------------------------------------------------------------------------------------
+2618
+SELECT p.name, f.name, c.name
+FROM categories c 
+INNER JOIN products p 
+ON p.id_categories = c.id INNER JOIN providers f 
+ON p.id_providers = f.id
+WHERE c.name = 'Imported' AND f.name = 'Sansul SA'
+---------------------------------------------------------------------------------------------------------------------------------------
+2745
+SELECT name, round((salary * 0.10), 2) AS tax
+FROM people
+WHERE salary > 3000
+---------------------------------------------------------------------------------------------------------------------------------------
+2605
+SELECT p.name, f.name
+FROM products p 
+INNER JOIN providers f 
+ON p.id_providers	= f.id
+WHERE p.id_categories = 6
+---------------------------------------------------------------------------------------------------------------------------------------
+2611
+SELECT m.id, m.name
+FROM movies m 
+INNER JOIN genres g 
+ON m.id_genres = g.id	
+WHERE LOWER(g.description) = 'action'
+---------------------------------------------------------------------------------------------------------------------------------------
+2623
+SELECT p.name, c.name
+FROM products p 
+INNER JOIN categories c 
+ON p.id_categories = c.id
+WHERE p.amount > 100 AND p.id_categories IN(1, 2, 3, 6, 9)
+---------------------------------------------------------------------------------------------------------------------------------------
+2738
+SELECT c.name, cast((((s.math * 2) + (s.specific * 3) + (s.project_plan * 5)) / 10) AS NUMERIC(15, 2)) AS avg
+FROM candidate c 
+INNER JOIN score s 
+ON c.id = s.candidate_id
+ORDER BY avg DESC
+---------------------------------------------------------------------------------------------------------------------------------------
+2602
+SELECT name
+FROM customers
+WHERE UPPER(state) = 'RS'
+---------------------------------------------------------------------------------------------------------------------------------------
+2625
+SELECT substring(cpf, 1, 3 ) || '.' || substring(cpf, 4, 3 ) || '.' || substring(cpf, 7, 3) || '-' || substring(cpf, 10, 2)
+FROM natural_person 
+---------------------------------------------------------------------------------------------------------------------------------------
+2988
+SELECT 
+(SELECT name 
+FROM teams t 
+WHERE t.id = team.id) 
+as name, 
+(SELECT count(team_1)FROM matches WHERE team_1 = team.id)+
+(SELECT count(team_2) 
+FROM matches WHERE 
+team_2 = team.id) 
+as matches,
+(SELECT sum(case when team_2_goals > team_1_goals then 1 else 0 END) as victories 
+FROM teams t INNER JOIN matches m ON t.id = m.team_2 
+WHERE t.id = team.id)+
+(SELECT sum(case when team_1_goals > team_2_goals then 1 else 0 END) 
+FROM teams t INNER JOIN matches m ON t.id = m.team_1 
+WHERE t.id = team.id) 
+as victories,
+(SELECT sum(case when team_2_goals < team_1_goals then 1 else 0 END) as victories 
+FROM teams t INNER JOIN matches m ON t.id = m.team_2 
+WHERE t.id = team.id)+
+(SELECT sum(case when team_1_goals < team_2_goals then 1 else 0 END) 
+FROM teams t INNER JOIN matches m ON t.id = m.team_1 
+WHERE t.id = team.id) as defeats,
+(SELECT sum(case when team_2_goals = team_1_goals then 1 else 0 END) as victories 
+FROM teams t INNER JOIN matches m ON t.id = m.team_2 
+WHERE t.id = team.id)+
+(SELECT sum(case when team_1_goals = team_2_goals then 1 else 0 END) 
+FROM teams t INNER JOIN matches m ON t.id = m.team_1 
+WHERE t.id = team.id) 
+as draws,
+(SELECT sum(case when team_2_goals > team_1_goals then 3 when team_2_goals = team_1_goals then 1 else 0 END) as victories 
+FROM teams t INNER JOIN matches m ON t.id = m.team_2 
+WHERE t.id = team.id)+
+(SELECT sum(case when team_1_goals > team_2_goals then 3 when team_1_goals = team_2_goals then 1 else 0 END) 
+FROM teams t INNER JOIN matches m ON t.id = m.team_1 
+WHERE t.id = team.id) 
+as score
+FROM teams team
+ORDER BY score DESC
+---------------------------------------------------------------------------------------------------------------------------------------
+2990
+SELECT e.cpf, e.enome, d.dnome
+FROM departamentos d 
+INNER JOIN empregados e ON d.dnumero = e.dnumero 
+LEFT JOIN trabalha t 
+ON t.cpf_emp = e.cpf
+LEFT JOIN projetos p 
+ON t.pnumero = p.pnumero
+WHERE p.pnumero IS NULL
+ORDER BY e.cpf
+---------------------------------------------------------------------------------------------------------------------------------------
+2614
+SELECT c.name, r.rentals_date
+FROM customers c 
+INNER JOIN rentals r
+ON c.id = r.id_customers
+WHERE r.rentals_date BETWEEN '2016-09-01' AND '2016-09-30'
+---------------------------------------------------------------------------------------------------------------------------------------
+2616
+SELECT id, name
+FROM customers c
+WHERE NOT EXISTS 
+(SELECT id_customers 
+FROM locations l
+WHERE c.id = l.id_customers)
+---------------------------------------------------------------------------------------------------------------------------------------
+2996
+
+---------------------------------------------------------------------------------------------------------------------------------------
+2742
+SELECT l.name, round((l.omega * 1.618), 3) AS "Fator N" 
+FROM life_registry l JOIN dimensions d 
+ON l.dimensions_id = d.id 
+WHERE d.name in ('C875', 'C774') AND l.name LIKE 'Richard%'
+ORDER BY l.omega ASC
+---------------------------------------------------------------------------------------------------------------------------------------
+2995
+WITH matching_temperatures AS 
+(SELECT temperature, COUNT(temperature) AS matching_count
+FROM records
+GROUP BY temperature, mark
+ORDER BY mark)
+SELECT temperature, matching_count AS number_of_records
+FROM matching_temperatures
+---------------------------------------------------------------------------------------------------------------------------------------
+2999
+WITH salarios AS 
+(SELECT venc_agrupados.matr,venc_agrupados.lotacao_div, ROUND(SUM(total_vencimentos) - COALESCE(SUM(total_descontos), 0), 2) AS salario
+FROM 
+(SELECT empregado.matr, empregado.lotacao_div, COALESCE(SUM(vencimento.valor), 0) AS total_vencimentos
+FROM empregado
+LEFT JOIN emp_venc
+ON empregado.matr = emp_venc.matr
+LEFT JOIN vencimento
+ON emp_venc.cod_venc = vencimento.cod_venc
+GROUP BY empregado.matr, empregado.lotacao_div) 
+AS venc_agrupados
+LEFT JOIN 
+(SELECT empregado.matr, empregado.lotacao_div, COALESCE(SUM(desconto.valor), 0) AS total_descontos
+FROM empregado
+LEFT JOIN emp_desc
+ON empregado.matr = emp_desc.matr
+LEFT JOIN desconto
+ON emp_desc.cod_desc = desconto.cod_desc
+GROUP BY empregado.matr, empregado.lotacao_div) 
+AS desc_agrupados
+ON venc_agrupados.matr = desc_agrupados.matr
+GROUP BY venc_agrupados.matr, venc_agrupados.lotacao_div), media_salarial_div AS 
+(SELECT lotacao_div, AVG(salario) as salario_medio
+FROM salarios
+GROUP BY lotacao_div)
+SELECT empregado.nome, salarios.salario
+FROM salarios
+INNER JOIN media_salarial_div
+ON salarios.lotacao_div = media_salarial_div.lotacao_div
+AND salarios.salario > media_salarial_div.salario_medio
+AND salarios.salario > 8000
+INNER JOIN empregado
+ON salarios.matr = empregado.matr
+ORDER BY salarios.lotacao_div
+---------------------------------------------------------------------------------------------------------------------------------------
+2741
+SELECT concat('Approved: ', name) as name, grade
+FROM students
+WHERE grade >= 7
+ORDER BY grade DESC
+---------------------------------------------------------------------------------------------------------------------------------------
+2740
+(SELECT concat('Podium: ', team) as name 
+FROM league 
+WHERE position <= 3)
+UNION ALL
+(SELECT concat('Demoted: ', team) as name 
+FROM league
+WHERE position >= 14)
+---------------------------------------------------------------------------------------------------------------------------------------
+2609
+SELECT c.name, SUM(p.amount)
+FROM categories c 
+INNER JOIN products p 
+ON c.id = p.id_categories 
+GROUP BY c.name
+---------------------------------------------------------------------------------------------------------------------------------------
+2739
+SELECT name, cast(EXTRACT(DAY FROM payday) AS INT) as day
+FROM loan
+---------------------------------------------------------------------------------------------------------------------------------------
+3001
+SELECT name, CASE WHEN type = 'A' THEN 20.0 WHEN type = 'B' THEN 70.0 ELSE 530.5 END AS price
+FROM products
+ORDER BY price ASC, id DESC
+---------------------------------------------------------------------------------------------------------------------------------------
+2998
+WITH running_operations_returns AS
+(SELECT clients.id, clients.name, clients.investment,operations.month,
+SUM(profit) OVER (PARTITION BY client_id ORDER BY operations.id) AS running_sum_of_profit,
+SUM(profit) OVER (PARTITION BY client_id ORDER BY operations.id) - clients.investment AS return
+FROM operations
+INNER JOIN clients
+ON operations.client_id = clients.id
+ORDER BY operations.client_id, operations.month)
+SELECT payback_month_return.name, running_operations_returns.investment, running_operations_returns.month AS month_of_payback, payback_month_return.return
+FROM
+(SELECT DISTINCT ON (id) name, investment, return
+FROM running_operations_returns
+WHERE return >= 0) AS payback_month_return
+INNER JOIN running_operations_returns
+USING (return )
+ORDER BY return DESC
+---------------------------------------------------------------------------------------------------------------------------------------
+2737
+(SELECT name, customers_number
+FROM lawyers
+ORDER BY customers_number DESC
+LIMIT 1)
+UNION ALL(
+SELECT name, customers_number
+FROM lawyers
+ORDER BY customers_number ASC
+LIMIT 1)
+UNION ALL
+(SELECT 'Average', round(AVG(customers_number), 0)
+FROM lawyers)
+---------------------------------------------------------------------------------------------------------------------------------------
+2989
+SELECT departamento.nome AS departamento, divisao.nome AS divisao,
+ROUND(AVG(salarios.salario), 2) AS media,
+ROUND(MAX(salarios.salario), 2) AS maior
+FROM
+(SELECT venc_agrupados.lotacao, venc_agrupados.lotacao_div,
+ROUND(SUM(total_vencimentos) - COALESCE(SUM(total_descontos), 0), 2) AS salario
+FROM 
+(SELECT empregado.matr,empregado.lotacao,empregado.lotacao_div,
+COALESCE(SUM(vencimento.valor), 0) AS total_vencimentos
+FROM empregado
+LEFT JOIN emp_venc
+ON empregado.matr = emp_venc.matr
+LEFT JOIN vencimento
+ON emp_venc.cod_venc = vencimento.cod_venc
+GROUP BY empregado.matr, empregado.lotacao, empregado.lotacao_div) 
+AS venc_agrupados
+LEFT JOIN 
+(SELECT empregado.matr,empregado.lotacao,empregado.lotacao_div,
+COALESCE(SUM(desconto.valor), 0) AS total_descontos
+FROM empregado
+LEFT JOIN emp_desc
+ON empregado.matr = emp_desc.matr
+LEFT JOIN desconto
+ON emp_desc.cod_desc = desconto.cod_desc
+GROUP BY empregado.matr, empregado.lotacao, empregado.lotacao_div) AS desc_agrupados
+ON venc_agrupados.matr = desc_agrupados.matr
+GROUP BY venc_agrupados.matr, venc_agrupados.lotacao, venc_agrupados.lotacao_div) 
+AS salarios
+INNER JOIN departamento
+ON salarios.lotacao = departamento.cod_dep
+INNER JOIN divisao
+ON salarios.lotacao_div = divisao.cod_divisao
+GROUP BY divisao.nome, departamento.nome
+ORDER BY media DESC
+---------------------------------------------------------------------------------------------------------------------------------------
+2992
+WITH media_salarial_por_divisao AS 
+(SELECT salarios.lotacao, salarios.lotacao_div, ROUND(AVG(salarios.salario), 2) AS media
+FROM 
+(SELECT venc_agrupados.lotacao, venc_agrupados.lotacao_div, ROUND(SUM(total_vencimentos) - COALESCE(SUM(total_descontos), 0), 2) AS salario
+FROM 
+(SELECT empregado.matr, empregado.lotacao, empregado.lotacao_div,COALESCE(SUM(vencimento.valor), 0) AS total_vencimentos
+FROM empregado
+LEFT JOIN emp_venc
+ON empregado.matr = emp_venc.matr
+LEFT JOIN vencimento
+ON emp_venc.cod_venc = vencimento.cod_venc
+GROUP BY empregado.matr, empregado.lotacao, empregado.lotacao_div) AS venc_agrupados
+LEFT JOIN 
+(SELECT empregado.matr, empregado.lotacao, empregado.lotacao_div, COALESCE(SUM(desconto.valor), 0) AS total_descontos
+FROM empregado
+LEFT JOIN emp_desc
+ON empregado.matr = emp_desc.matr
+LEFT JOIN desconto
+ON emp_desc.cod_desc = desconto.cod_desc
+GROUP BY empregado.matr, empregado.lotacao, empregado.lotacao_div) AS desc_agrupados
+ON venc_agrupados.matr = desc_agrupados.matr
+GROUP BY venc_agrupados.matr, venc_agrupados.lotacao, venc_agrupados.lotacao_div) AS salarios GROUP BY salarios.lotacao, salarios.lotacao_div	)
+SELECT departamento.nome AS departamento, divisao.nome AS divisao, media_salarial_por_divisao.media AS media
+FROM media_salarial_por_divisao
+INNER JOIN departamento
+ON media_salarial_por_divisao.lotacao = departamento.cod_dep
+INNER JOIN divisao
+ON media_salarial_por_divisao.lotacao_div = divisao.cod_divisao
+WHERE media IN (SELECT MAX(media) OVER (PARTITION BY lotacao) FROM media_salarial_por_divisao)
+ORDER BY media DESC
+---------------------------------------------------------------------------------------------------------------------------------------
+2997
+SELECT departamento.nome AS Departamento, empregado.nome AS Empregado,
+CASE WHEN composicao_salarios.total_vencimentos = 0.00 THEN 0
+ELSE composicao_salarios.total_vencimentos END AS "Salario Bruto",		 
+CASE WHEN composicao_salarios.total_descontos = 0.00 THEN 0
+ELSE composicao_salarios.total_descontos END AS "Total Desconto",
+CASE WHEN composicao_salarios.salario = 0.00 THEN 0
+ELSE composicao_salarios.salario END AS "Salario Liquidoaws"
+FROM 
+(SELECT venc_agrupados.lotacao, venc_agrupados.matr, venc_agrupados.total_vencimentos, desc_agrupados.total_descontos,
+ROUND(SUM(total_vencimentos) - COALESCE(SUM(total_descontos), 0), 2) AS salario
+FROM 
+(SELECT empregado.matr, empregado.lotacao, COALESCE(SUM(vencimento.valor), 0) AS total_vencimentos
+FROM empregado
+LEFT JOIN emp_venc
+ON empregado.matr = emp_venc.matr
+LEFT JOIN vencimento
+ON emp_venc.cod_venc = vencimento.cod_venc
+GROUP BY empregado.matr, empregado.lotacao) AS venc_agrupados
+LEFT JOIN 
+(SELECT empregado.matr, empregado.lotacao, COALESCE(SUM(desconto.valor), 0) AS total_descontos
+FROM empregado
+LEFT JOIN emp_desc
+ON empregado.matr = emp_desc.matr
+LEFT JOIN desconto
+ON emp_desc.cod_desc = desconto.cod_desc
+GROUP BY empregado.matr, empregado.lotacao) AS desc_agrupados
+ON venc_agrupados.matr = desc_agrupados.matr
+GROUP BY venc_agrupados.matr, venc_agrupados.lotacao, 
+venc_agrupados.total_vencimentos, desc_agrupados.total_descontos) AS composicao_salarios
+INNER JOIN departamento
+ON composicao_salarios.lotacao = departamento.cod_dep
+INNER JOIN empregado
+ON composicao_salarios.matr = empregado.matr
+ORDER BY salario DESC
+---------------------------------------------------------------------------------------------------------------------------------------
+2991
+SELECT departamento.nome AS "Nome Departamento", COUNT(salarios.lotacao) AS "Numero de Empregados",
+ROUND(AVG(salarios.salario), 2) AS "Media Salarial",
+ROUND(MAX(salarios.salario), 2) AS "Maior Salario",
+CASE WHEN MIN(salarios.salario) = 0.00 THEN 0
+ELSE ROUND(MIN(salarios.salario), 2)
+END AS "Menor Salario"
+FROM
+(SELECT venc_agrupados.lotacao,
+ROUND(SUM(total_vencimentos) - COALESCE(SUM(total_descontos), 0), 2) AS salario
+FROM 
+(SELECT empregado.matr, empregado.lotacao,
+COALESCE(SUM(vencimento.valor), 0) AS total_vencimentos
+FROM empregado
+LEFT JOIN emp_venc
+ON empregado.matr = emp_venc.matr
+LEFT JOIN vencimento
+ON emp_venc.cod_venc = vencimento.cod_venc
+GROUP BY empregado.matr, empregado.lotacao) AS venc_agrupados
+LEFT JOIN 
+(SELECT empregado.matr,empregado.lotacao,
+COALESCE(SUM(desconto.valor), 0) AS total_descontos
+FROM empregado
+LEFT JOIN emp_desc
+ON empregado.matr = emp_desc.matr
+LEFT JOIN desconto
+ON emp_desc.cod_desc = desconto.cod_desc
+GROUP BY empregado.matr, empregado.lotacao) AS desc_agrupados
+ON venc_agrupados.matr = desc_agrupados.matr
+GROUP BY venc_agrupados.matr, venc_agrupados.lotacao) AS salarios
+INNER JOIN departamento
+ON salarios.lotacao = departamento.cod_dep
+GROUP BY departamento.nome
+ORDER BY "Media Salarial" DESC
+
+
+
+
+
+
+
+
